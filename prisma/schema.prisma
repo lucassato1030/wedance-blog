@@ -1,0 +1,40 @@
+// This is Prisma schema file.
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  // Relations example
+  posts     Post[]
+  
+  @@map("users")
+}
+// This table has not been used in this project. It is just for testing.
+model Post {
+  id        String   @id @default(uuid())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  authorId  String   @map("author_id")
+  author    User     @relation(fields: [authorId], references: [id])
+  
+  @@map("posts")
+}
